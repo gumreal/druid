@@ -96,10 +96,16 @@ class StreamChunkParser
       rowIngestionMeters.incrementThrownAway();
       return Collections.emptyList();
     } else {
-      if (byteEntityReader != null) {
-        return parseWithInputFormat(byteEntityReader, streamChunk);
-      } else {
-        return parseWithParser(parser, streamChunk);
+      try {
+        if (byteEntityReader != null) {
+          return parseWithInputFormat(byteEntityReader, streamChunk);
+        } else {
+          return parseWithParser(parser, streamChunk);
+        }
+      }
+      catch (Exception e) {
+        rowIngestionMeters.incrementThrownAway();
+        return Collections.emptyList();
       }
     }
   }
